@@ -46,8 +46,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             return dataModel.keys.count
         }
         guard let row = selectedRow else { return 0 }
-        let array = dataModel.keys.sorted()
-        let key = array[row]
+        let key = dataModel.keys.sorted()[row]
         guard let selectedArray = dataModel[key] else { return 0 }
         return selectedArray.count
     }
@@ -61,8 +60,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "rightCell")
         cell?.textLabel?.text = "wow"
         guard let row = selectedRow else { return cell! }
-        let array = dataModel.keys.sorted()
-        let key = array[row]
+        let key = dataModel.keys.sorted()[row]
         guard let selectedArray = dataModel[key] else { return cell! }
         cell?.textLabel?.text = selectedArray[indexPath.row]
         return cell!
