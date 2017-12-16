@@ -12,9 +12,23 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var mainTableView: UITableView!
     @IBOutlet weak var subTableView: UITableView!
+    
+    let dataModel : [String: [String]] = [
+        "1" : [ "1.1", "1.2", "1.3", "1.4" ],
+        "2" : [ "2.1", "2.4" ],
+        "3" : [ "3.1", "3.3", "3.4"],
+        "4" : [ "4.0" ]
+    ]
+    
+    var selectedRow : Int?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        mainTableView.dataSource = self
+        mainTableView.delegate = self
+        subTableView.dataSource = self
+        subTableView.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -26,12 +40,38 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 0
+        if tableView.tag == 0 {
+            return dataModel.keys.count
+        }
+        guard let row = selectedRow else { return 0 }
+        let key = dataModel.keys.sorted()[row]
+        guard let selectedArray = dataModel[key] else { return 0 }
+        return selectedArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return UITableViewCell()
+        if tableView.tag == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "leftCell")
+            cell?.textLabel?.text = dataModel.keys.sorted()[indexPath.row]
+            return cell!
+        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "rightCell")
+        cell?.textLabel?.text = "wow"
+        guard let row = selectedRow else { return cell! }
+        let key = dataModel.keys.sorted()[row]
+        guard let selectedArray = dataModel[key] else { return cell! }
+        cell?.textLabel?.text = selectedArray[indexPath.row]
+        return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if tableView.tag == 0 {
+            self.selectedRow = indexPath.row
+            self.subTableView.reloadData()
+        }
+        
     }
 }
 
